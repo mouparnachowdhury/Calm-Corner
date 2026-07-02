@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!--
+  Calm Corner - Journal
+  This page shows my past check-ins, newest first, and a gentle summary
+  of how many times I've checked in.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Journal - Calm Corner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="wrap">
+
+    <nav>
+      <a href="index.html">Today</a>
+      <a href="journal.html" class="active">Journal</a>
+      <a href="breathe.html">Breathe</a>
+    </nav>
+
+    <div class="greeting">Your journal</div>
+    <p class="sub" id="summary">A look back at how you've been.</p>
+
+    <div class="card">
+      <div id="entries"></div>
+    </div>
+
+    <footer>
+      Looking back gently is enough. No need to judge any day.
+    </footer>
+  </div>
+
+  <script>
+    // A little map so I can show the right emoji for each saved mood.
+    const faces = {
+      Great: "😄",
+      Good: "🙂",
+      Okay: "😐",
+      Low: "😕",
+      Rough: "😔"
+    };
+
+    // Make any text safe to drop into HTML, so notes with characters
+    // like < or & always display correctly instead of breaking the page.
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Load past entries. Wrapped in try/catch so bad storage never crashes it.
+    function loadEntries() {
+      try {
+        const saved = localStorage.getItem("cc_entries");
+        const parsed = saved ? JSON.parse(saved) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveEntries(entries) {
+      localStorage.setItem("cc_entries", JSON.stringify(entries));
+    }
+
+    // Draw every entry, newest at the top.
+    function showEntries() {
+      const entries = loadEntries();
+      const box = document.getElementById("entries");
+      const summary = document.getElementById("summary");
+
+      if (entries.length === 0) {
+        box.innerHTML =
+          '<p class="empty">No check-ins yet. Head to Today to add your first one.</p>';
+        summary.textContent = "A look back at how you've been.";
+        return;
+      }
+
+      // A gentle summary line.
+      summary.textContent =
+        "You've checked in " + entries.length +
+        (entries.length === 1 ? " time. That counts." : " times. That counts.");
+
+      box.innerHTML = "";
+
+      // Go backwards so the newest shows first.
+      entries
+        .slice()
+        .reverse()
+        .forEach(function (entry, reversedIndex) {
+          // work out the real position in the original list (for deleting)
+          const realIndex = entries.length - 1 - reversedIndex;
+
+          const row = document.createElement("div");
+          row.className = "entry";
+
+          const noteText = entry.note ? escapeHtml(entry.note) : "(no note)";
+
+          row.innerHTML =
+            '<div class="face">' + (faces[entry.mood] || "🙂") + "</div>" +
+            '<div class="body">' +
+              '<div class="when">' + escapeHtml(entry.date) + " · " +
+                escapeHtml(entry.time) + " · " + escapeHtml(entry.mood) + "</div>" +
+              '<div class="note">' + noteText + "</div>" +
+            "</div>";
+
+          const remove = document.createElement("button");
+          remove.className = "remove";
+          remove.textContent = "×";
+          remove.onclick = function () {
+            const all = loadEntries();
+            all.splice(realIndex, 1); // remove this one
+            saveEntries(all);
+            showEntries();            // redraw
+          };
+          row.appendChild(remove);
+
+          box.appendChild(row);
+        });
+    }
+
+    showEntries();
+  </script>
+</body>
+</html>

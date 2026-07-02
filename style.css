@@ -1,0 +1,292 @@
+/*
+  Calm Corner - shared styles
+  One stylesheet used by all three pages so the whole site looks the same.
+  I kept the colours calm and soft on purpose.
+*/
+
+:root {
+  --bg: #eef2f0;          /* soft pale background */
+  --card: #ffffff;
+  --text: #2f3a37;        /* main text */
+  --muted: #7d8a85;       /* softer grey text */
+  --accent: #6f9c86;      /* sage green */
+  --accent-soft: #e3ede8; /* pale green */
+  --plum: #9b7fa6;        /* second accent, used gently */
+  --border: #e0e6e3;
+  --shadow: 0 4px 18px rgba(50, 70, 60, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* Wrapper that centres the content and keeps it a comfy width */
+.wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+
+/* ---------- Top navigation (same on every page) ---------- */
+nav {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 24px;
+  padding-top: 8px;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 7px 14px;
+  border-radius: 20px;
+  transition: all 0.15s ease;
+}
+
+nav a:hover {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+
+/* the current page's link is highlighted */
+nav a.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+
+/* ---------- Headings ---------- */
+.greeting {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.sub {
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+/* ---------- Mood buttons ---------- */
+.moods {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.mood {
+  flex: 1;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 14px;
+  padding: 12px 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.mood:hover {
+  border-color: var(--accent);
+}
+
+.mood .face {
+  font-size: 1.6rem;
+  display: block;
+}
+
+.mood .name {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* the mood the user picked */
+.mood.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.mood.selected .name {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- Note box and buttons ---------- */
+textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  resize: vertical;
+  min-height: 70px;
+  margin-top: 16px;
+}
+
+textarea:focus {
+  outline: 2px solid var(--accent);
+  border-color: var(--accent);
+}
+
+.btn {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 13px;
+  cursor: pointer;
+  margin-top: 16px;
+  font-family: inherit;
+}
+
+.btn:hover {
+  opacity: 0.92;
+}
+
+/* small confirmation message after saving */
+.saved-msg {
+  text-align: center;
+  color: var(--accent);
+  font-weight: 500;
+  margin-top: 14px;
+  min-height: 20px;
+}
+
+/* ---------- Journal entries ---------- */
+.entry {
+  display: flex;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.entry:last-child {
+  border-bottom: none;
+}
+
+.entry .face {
+  font-size: 1.5rem;
+}
+
+.entry .body {
+  flex: 1;
+}
+
+.entry .when {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.entry .note {
+  margin-top: 3px;
+  font-size: 0.95rem;
+}
+
+.entry .remove {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.entry .remove:hover {
+  color: var(--plum);
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 20px;
+}
+
+/* ---------- Breathing circle ---------- */
+.breathe-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0;
+}
+
+.circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  border: 3px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* the animation grows and shrinks the circle in a slow loop */
+  animation: breathe 8s ease-in-out infinite;
+}
+
+.circle span {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+@keyframes breathe {
+  0%   { transform: scale(0.7); }  /* smallest: fully breathed out */
+  50%  { transform: scale(1.1); }  /* biggest: fully breathed in */
+  100% { transform: scale(0.7); }
+}
+
+/* respect people who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  .circle {
+    animation: none;
+  }
+}
+
+.cue {
+  margin-top: 24px;
+  font-size: 1.1rem;
+  color: var(--text);
+  min-height: 24px;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-top: 28px;
+  line-height: 1.6;
+}

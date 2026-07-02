@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--
+  Calm Corner - Breathe
+  A simple breathing exercise. The circle grows and shrinks slowly, and the
+  words change to guide you: breathe in as it grows, out as it shrinks.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Breathe - Calm Corner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="wrap">
+
+    <nav>
+      <a href="index.html">Today</a>
+      <a href="journal.html">Journal</a>
+      <a href="breathe.html" class="active">Breathe</a>
+    </nav>
+
+    <div class="greeting">Take a slow breath</div>
+    <p class="sub">Follow the circle. In as it grows, out as it shrinks.</p>
+
+    <div class="card">
+      <div class="breathe-stage">
+        <div class="circle"><span id="count"></span></div>
+        <div class="cue" id="cue">Breathe in…</div>
+      </div>
+    </div>
+
+    <footer>
+      Even one slow minute can help. Stay as long as you like.
+    </footer>
+  </div>
+
+  <script>
+    /*
+      The circle's animation is 8 seconds long (set in the CSS):
+      4 seconds growing (breathe in) and 4 seconds shrinking (breathe out).
+      Here we just swap the words to match that rhythm.
+    */
+
+    const cue = document.getElementById("cue");
+    let breathingIn = true;
+
+    function switchCue() {
+      if (breathingIn) {
+        cue.textContent = "Breathe in…";
+      } else {
+        cue.textContent = "Breathe out…";
+      }
+      breathingIn = !breathingIn; // flip for next time
+    }
+
+    // Start on "breathe in", then switch every 4 seconds.
+    switchCue();
+    setInterval(switchCue, 4000);
+  </script>
+</body>
+</html>

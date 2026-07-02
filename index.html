@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!--
+  Calm Corner - Home / daily check-in
+  This is the main page. It says hello, asks how I'm feeling, and lets me
+  save a quick check-in with an optional note.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calm Corner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- Navigation, same links on every page -->
+    <nav>
+      <a href="index.html" class="active">Today</a>
+      <a href="journal.html">Journal</a>
+      <a href="breathe.html">Breathe</a>
+    </nav>
+
+    <!-- Greeting is filled in by JavaScript using the name + time of day -->
+    <div class="greeting" id="greeting">Hello</div>
+    <p class="sub" id="subline">Take a moment to check in with yourself.</p>
+
+    <div class="card">
+      <h2>How are you feeling right now?</h2>
+
+      <div class="moods" id="moods">
+        <!-- Each mood button carries its label in data-mood -->
+        <button class="mood" data-mood="Great"><span class="face">😄</span><span class="name">Great</span></button>
+        <button class="mood" data-mood="Good"><span class="face">🙂</span><span class="name">Good</span></button>
+        <button class="mood" data-mood="Okay"><span class="face">😐</span><span class="name">Okay</span></button>
+        <button class="mood" data-mood="Low"><span class="face">😕</span><span class="name">Low</span></button>
+        <button class="mood" data-mood="Rough"><span class="face">😔</span><span class="name">Rough</span></button>
+      </div>
+
+      <textarea id="note" placeholder="Anything you'd like to note? (optional)"></textarea>
+
+      <button class="btn" id="saveBtn">Save today's check-in</button>
+      <div class="saved-msg" id="savedMsg"></div>
+    </div>
+
+    <footer>
+      This is a personal space to notice how you feel.<br />
+      If things feel heavy, please reach out to someone you trust.
+    </footer>
+  </div>
+
+  <script>
+    /* ---------- A friendly greeting based on the time and your name ---------- */
+
+    // Ask for a name the very first time, then remember it.
+    function getName() {
+      let name = localStorage.getItem("cc_name");
+      if (!name) {
+        name = prompt("Hi! What should I call you?");
+        if (name) {
+          name = name.trim();
+          localStorage.setItem("cc_name", name);
+        }
+      }
+      return name || "friend";
+    }
+
+    // Pick a greeting word based on the current hour.
+    function timeGreeting() {
+      const hour = new Date().getHours();
+      if (hour < 12) return "Good morning";
+      if (hour < 17) return "Good afternoon";
+      return "Good evening";
+    }
+
+    document.getElementById("greeting").textContent =
+      timeGreeting() + ", " + getName();
+
+    /* ---------- Picking a mood ---------- */
+
+    let selectedMood = null;
+    const moodButtons = document.querySelectorAll(".mood");
+
+    moodButtons.forEach(function (button) {
+      button.onclick = function () {
+        // clear any previous choice, then highlight this one
+        moodButtons.forEach(function (b) {
+          b.classList.remove("selected");
+        });
+        button.classList.add("selected");
+        selectedMood = button.getAttribute("data-mood");
+      };
+    });
+
+    /* ---------- Saving a check-in ---------- */
+
+    // Load the list of past entries (or start empty).
+    // Wrapped in try/catch so a bad value in storage can never crash the page.
+    function loadEntries() {
+      try {
+        const saved = localStorage.getItem("cc_entries");
+        const parsed = saved ? JSON.parse(saved) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    document.getElementById("saveBtn").onclick = function () {
+      if (!selectedMood) {
+        document.getElementById("savedMsg").textContent =
+          "Pick a mood first 🙂";
+        return;
+      }
+
+      const entries = loadEntries();
+
+      // Add the new check-in to the list.
+      entries.push({
+        mood: selectedMood,
+        note: document.getElementById("note").value.trim(),
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      });
+
+      localStorage.setItem("cc_entries", JSON.stringify(entries));
+
+      // Reset the form and show a kind message.
+      document.getElementById("note").value = "";
+      moodButtons.forEach(function (b) { b.classList.remove("selected"); });
+      selectedMood = null;
+      document.getElementById("savedMsg").textContent =
+        "Saved. Thanks for checking in with yourself 🌿";
+    };
+  </script>
+</body>
+</html>
